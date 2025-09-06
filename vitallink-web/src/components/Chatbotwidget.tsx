@@ -132,7 +132,7 @@ export default function ChatbotWidget() {
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="bg-theme-500 text-black font-semibold px-4 py-2 rounded-r-md disabled:bg-theme-300 disabled:cursor-not-allowed hover:bg-theme-600 transition-colors flex items-center justify-center"
+            className="shadow-black bg-theme-500 text-black font-semibold px-4 py-2 rounded-r-md disabled:bg-theme-300 disabled:cursor-not-allowed hover:bg-theme-600 transition-colors flex items-center justify-center"
             aria-label="Send message"
           >
             <svg
