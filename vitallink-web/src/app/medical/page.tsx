@@ -99,15 +99,15 @@ export default function MedicalPage() {
     <div className="bg-gray-50 flex-grow py-12">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Donor Verification Portal</h1>
-          <Link href="/medical/add-patient" className="rounded-md bg-theme-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-theme-600">
+          <h1 className="text-3xl text-black font-bold">Donor Verification Portal</h1>
+          <Link href="/medical/add-patient" className="rounded-md bg-theme-500 px-4 py-2 text-sm font-medium text-black shadow-sm hover:bg-theme-600">
             + Add New Patient
           </Link>
         </div>
         <p className="mt-2 text-gray-600">Review and approve new donor registrations.</p>
 
         <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Pending Approvals</h2>
+          <h2 className="text-xl text-black font-semibold mb-4">Pending Approvals</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
