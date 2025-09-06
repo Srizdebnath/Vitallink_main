@@ -69,7 +69,7 @@ export default function ChatbotWidget() {
 
         <div ref={messagesContainerRef} className="flex-grow p-4 overflow-y-auto space-y-4">
           {messages.length === 0 && !isLoading && (
-            <div className="text-center text-black text-gray-500 h-full flex flex-col justify-center items-center">
+            <div className="text-center text-black h-full flex flex-col justify-center items-center">
               <div className="mx-auto flex h-16 w-16 text-black items-center justify-center rounded-full bg-theme-100 mb-4">
                 <svg
                   className="h-8 w-8 text-black text-theme-600"
