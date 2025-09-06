@@ -2,6 +2,16 @@
 
 'use client';
 import { useState } from 'react';
+import { jwtDecode } from 'jwt-decode'; // <-- 1. IMPORT the decoder
+
+// 2. DEFINE a type for our token's payload for better code quality
+interface DecodedToken {
+  userId: string;
+  email: string;
+  role: 'DONOR' | 'MEDICAL_PROFESSIONAL' | 'ADMIN';
+  iat: number;
+  exp: number;
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -9,18 +19,61 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem('token', data.token);
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // If login fails (e.g., wrong password), throw an error to be caught below
+        throw new Error(data.message || 'Login failed.');
+      }
+      
+      // If login is successful:
+      const { token } = data;
+      localStorage.setItem('token', token);
       alert('Login successful!');
-      window.location.href = '/dashboard';
-    } else {
-      alert(data.message || 'Login failed.');
+
+      // --- 3. IMPLEMENT THE REDIRECT LOGIC ---
+      try {
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        const userRole = decodedToken.role;
+
+        // Redirect based on the user's role
+        switch (userRole) {
+          case 'DONOR':
+            window.location.href = '/dashboard';
+            break;
+          case 'MEDICAL_PROFESSIONAL':
+            window.location.href = '/medical';
+            break;
+          case 'ADMIN':
+            window.location.href = '/admin'; // For future implementation
+            break;
+          default:
+            // Fallback to the homepage if role is unknown
+            window.location.href = '/';
+            break;
+        }
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        // If token is malformed, just go to a default page
+        window.location.href = '/dashboard';
+      }
+
+    } catch (error) {
+      // This will catch errors from the fetch call (e.g., network error)
+      // or the error we threw for a failed login.
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert('An unknown error occurred.');
+      }
     }
   };
 
@@ -33,6 +86,7 @@ export default function LoginPage() {
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* ... The rest of the form JSX is unchanged ... */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">Email address</label>
             <div className="mt-2">
@@ -53,7 +107,7 @@ export default function LoginPage() {
           </div>
           <div>
             <button type="submit"
-              className="flex w-full justify-center rounded-md bg-theme-500 px-3 py-1.5 text-sm font-semibold leading-6 text-black shadow-sm hover:bg-theme-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-500"
+              className="flex w-full justify-center text-black rounded-md bg-theme-500 px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm hover:bg-theme-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-500"
             >
               Sign in
             </button>
