@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 type DonorProfile = {
   bloodType: string;
@@ -50,25 +51,31 @@ export default function DashboardPage() {
     fetchProfile();
   }, [router]);
 
-  const handleProfileUpdate = async (event: React.FormEvent) => {
+  const handleProfileUpdate = (event: React.FormEvent) => {
     event.preventDefault();
     const token = localStorage.getItem('token');
     const organsArray = organs.split(',').map(organ => organ.trim()).filter(Boolean);
 
-    try {
-      const response = await fetch('/api/profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ bloodType, address, organsToDonate: organsArray }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Failed to update profile');
-      alert('Profile updated successfully!');
-      setProfile(data.profile);
-    } catch (error) {
-      console.error(error);
-      alert('Error updating profile.');
-    }
+    const updatePromise = fetch('/api/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ bloodType, address, organsToDonate: organsArray }),
+    }).then(async (response) => {
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to update profile');
+      }
+      return response.json();
+    });
+
+    toast.promise(updatePromise, {
+      loading: 'Saving changes...',
+      success: (data) => {
+        setProfile(data.profile);
+        return 'Profile updated successfully!';
+      },
+      error: (err) => err.toString(),
+    });
   };
 
   if (isLoading) {
@@ -78,16 +85,16 @@ export default function DashboardPage() {
   return (
     <div className="bg-gray-50 flex-grow">
       <div className="container mx-auto px-4 py-8 md:py-12">
-        <h1 className="text-3xl font-bold text-black">Your Donor Dashboard</h1>
+        <h1 className="text-3xl text-black font-bold">Your Donor Dashboard</h1>
         <p className="mt-2 text-gray-600">Manage your donation preferences and personal information below.</p>
 
         <div className="mt-8 max-w-2xl">
-          <form onSubmit={handleProfileUpdate} className="space-y-6 rounded-lg bg-white p-8 shadow-md">
-            <h2 className="text-xl font-semibold text-black">Update Your Profile</h2>
+          <form onSubmit={handleProfileUpdate} className="space-y-6 rounded-lg bg-white text-black p-8 shadow-md">
+            <h2 className="text-xl font-semibold">Update Your Profile</h2>
             <div>
               <label htmlFor="bloodType" className="block text-sm font-medium text-gray-700">Blood Type</label>
               <input type="text" id="bloodType" value={bloodType} onChange={(e) => setBloodType(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 text-black shadow-sm focus:border-theme-500 focus:ring-theme-500 sm:text-sm"
+                className="mt-1 block w-full text-black rounded-md border-gray-300 shadow-sm focus:border-theme-500 focus:ring-theme-500 sm:text-sm"
                 placeholder="e.g., A+"
               />
             </div>
@@ -102,7 +109,7 @@ export default function DashboardPage() {
               <label htmlFor="organs" className="block text-sm font-medium text-gray-700">Organs to Donate</label>
               <p className="text-xs text-gray-500">Separate with commas (e.g., Heart, Lungs, Kidneys)</p>
               <input type="text" id="organs" value={organs} onChange={(e) => setOrgans(e.target.value)}
-                className="mt-1 block w-full rounded-md text-black border-gray-300 shadow-sm focus:border-theme-500 focus:ring-theme-500 sm:text-sm"
+                className="mt-1 block w-full text-black rounded-md border-gray-300 shadow-sm focus:border-theme-500 focus:ring-theme-500 sm:text-sm"
               />
             </div>
             <div>

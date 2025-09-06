@@ -2,6 +2,7 @@
 
 'use client';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function RegisterMedicalPage() {
   const [fullName, setFullName] = useState('');
@@ -18,10 +19,10 @@ export default function RegisterMedicalPage() {
 
     const data = await response.json();
     if (response.ok) {
-      alert('Medical Professional account created successfully! Please log in.');
+      toast.success('Medical Professional account created successfully! Please log in.');
       window.location.href = '/login';
     } else {
-      alert(data.message || 'Something went wrong!');
+      toast.error(data.message || 'Something went wrong!');
     }
   };
 

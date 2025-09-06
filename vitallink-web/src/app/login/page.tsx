@@ -1,8 +1,7 @@
-// File: src/app/login/page.tsx
-
 'use client';
 import { useState } from 'react';
-import { jwtDecode } from 'jwt-decode'; // <-- 1. IMPORT the decoder
+import { jwtDecode } from 'jwt-decode'; 
+import toast from 'react-hot-toast';
 
 // 2. DEFINE a type for our token's payload for better code quality
 interface DecodedToken {
@@ -19,63 +18,54 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
+  
+    // We can wrap the API call in a toast.promise for a great UX
+    const loginPromise = fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    }).then(async (response) => {
       const data = await response.json();
-
       if (!response.ok) {
-        // If login fails (e.g., wrong password), throw an error to be caught below
+        // If the response is not OK, we must throw an error to be caught
         throw new Error(data.message || 'Login failed.');
       }
-      
-      // If login is successful:
-      const { token } = data;
-      localStorage.setItem('token', token);
-      alert('Login successful!');
-
-      // --- 3. IMPLEMENT THE REDIRECT LOGIC ---
-      try {
-        const decodedToken = jwtDecode<DecodedToken>(token);
-        const userRole = decodedToken.role;
-
-        // Redirect based on the user's role
-        switch (userRole) {
-          case 'DONOR':
-            window.location.href = '/dashboard';
-            break;
-          case 'MEDICAL_PROFESSIONAL':
-            window.location.href = '/medical';
-            break;
-          case 'ADMIN':
-            window.location.href = '/admin'; // For future implementation
-            break;
-          default:
-            // Fallback to the homepage if role is unknown
-            window.location.href = '/';
-            break;
+      return data; // Pass data on success
+    });
+  
+    // toast.promise will automatically handle loading, success, and error states
+    toast.promise(loginPromise, {
+      loading: 'Signing in...',
+      success: (data) => {
+        // This function runs on success
+        const { token } = data;
+        localStorage.setItem('token', token);
+        
+        try {
+          const decodedToken = jwtDecode<DecodedToken>(token);
+          const userRole = decodedToken.role;
+  
+          // Redirect after the toast is shown
+          setTimeout(() => {
+            switch (userRole) {
+              case 'DONOR': window.location.href = '/dashboard'; break;
+              case 'MEDICAL_PROFESSIONAL': window.location.href = '/medical'; break;
+              case 'ADMIN': window.location.href = '/admin'; break;
+              default: window.location.href = '/'; break;
+            }
+          }, 1000); // Wait 1 second before redirecting
+  
+        } catch (error) {
+          console.error("Failed to decode token:", error);
+          setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
         }
-      } catch (error) {
-        console.error("Failed to decode token:", error);
-        // If token is malformed, just go to a default page
-        window.location.href = '/dashboard';
-      }
-
-    } catch (error) {
-      // This will catch errors from the fetch call (e.g., network error)
-      // or the error we threw for a failed login.
-      if (error instanceof Error) {
-        alert(error.message);
-      } else {
-        alert('An unknown error occurred.');
-      }
-    }
+        
+        return 'Login successful!'; // This is the success message
+      },
+      error: (err) => err.message, // This function gets the error message
+    });
   };
+  
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-gray-50">
