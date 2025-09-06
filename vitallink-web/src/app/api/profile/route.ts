@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // 2. Verify the token
-    const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+    const decoded = verify(token, jwtSecret) as JwtPayload;
     const userId = decoded.userId;
 
     // 3. Fetch the donor profile from the database
@@ -61,7 +62,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Authorization header missing' }, { status: 401 });
     }
     const token = authHeader.split(' ')[1];
-    const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+    const decoded = verify(token, jwtSecret) as JwtPayload;
     const userId = decoded.userId;
     
     const body = await request.json();

@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
     }
     const token = authHeader.split(' ')[1];
 
-    const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+    const decoded = verify(token, jwtSecret) as JwtPayload;
 
     // ** SERVER-SIDE SECURITY CHECK **
     if (decoded.role !== 'MEDICAL_PROFESSIONAL') {

@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
     const token = authHeader.split(' ')[1];
-    const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+    const decoded = verify(token, jwtSecret) as JwtPayload;
 
     // Optional but good practice: ensure the user still exists in the database
     const user = await prisma.user.findUnique({ where: { id: decoded.userId } });

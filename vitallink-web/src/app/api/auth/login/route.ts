@@ -26,7 +26,13 @@ export async function POST(request: Request) {
       role: user.role,
     };
 
-    const token = sign(payload, process.env.JWT_SECRET!, {
+    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
+    
+    if (!process.env.JWT_SECRET) {
+      console.warn('JWT_SECRET not set in environment variables. Using fallback key for development.');
+    }
+
+    const token = sign(payload, jwtSecret, {
       expiresIn: '1h',
     });
 
