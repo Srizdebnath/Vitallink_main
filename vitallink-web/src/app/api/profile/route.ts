@@ -62,14 +62,14 @@ export async function POST(request: NextRequest) {
     const userId = decoded.userId;
     
     const body = await request.json();
-    const { bloodType, address, organsToDonate } = body;
+    const { bloodType, address, organsToDonate, donationType } = body;
     const organsString = organsToDonate.join(',');
 
    
     const updatedProfile = await prisma.donorProfile.upsert({
       where: { userId },
-      update: { bloodType, address, organsToDonate: organsString },
-      create: { userId, bloodType, address, organsToDonate: organsString },
+      update: { bloodType, address, organsToDonate: organsString, donationType },
+      create: { userId, bloodType, address, organsToDonate: organsString, donationType },
     });
 
     

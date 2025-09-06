@@ -35,12 +35,18 @@ model User {
   hospital     Hospital?     @relation(fields: [hospitalId], references: [id])
 }
 
+enum DonationType {
+  ALIVE 
+  AFTER_DEATH 
+}
+
 model DonorProfile {
   id             String      @id @default(cuid())
   bloodType      String?
   address        String?
   organsToDonate String?
   status         DonorStatus @default(PENDING_VERIFICATION)
+  donationType   DonationType @default(AFTER_DEATH)
   
   userId         String      @unique
   user           User        @relation(fields: [userId], references: [id])

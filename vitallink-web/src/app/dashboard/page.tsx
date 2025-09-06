@@ -3,11 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
+
 
 type DonorProfile = {
   bloodType: string;
   address: string;
   organsToDonate: string[];
+  donationType: 'ALIVE' | 'AFTER_DEATH';
 };
 
 export default function DashboardPage() {
@@ -17,6 +20,7 @@ export default function DashboardPage() {
   const [bloodType, setBloodType] = useState('');
   const [address, setAddress] = useState('');
   const [organs, setOrgans] = useState('');
+  const [donationType, setDonationType] = useState<'ALIVE' | 'AFTER_DEATH'>('AFTER_DEATH');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,6 +41,7 @@ export default function DashboardPage() {
           setBloodType(data.profile.bloodType || '');
           setAddress(data.profile.address || '');
           setOrgans(data.profile.organsToDonate.join(', '));
+          setDonationType(data.profile.donationType || 'AFTER_DEATH');
         }
       } catch (error) {
         console.error(error);
@@ -53,6 +58,8 @@ export default function DashboardPage() {
     event.preventDefault();
     const token = localStorage.getItem('token');
     const organsArray = organs.split(',').map(organ => organ.trim()).filter(Boolean);
+
+    const body = { bloodType, address, organsToDonate: organsArray, donationType };
 
     const updatePromise = fetch('/api/profile', {
       method: 'POST',
@@ -84,11 +91,39 @@ export default function DashboardPage() {
     <div className="bg-gray-50 flex-grow">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <h1 className="text-3xl text-black font-bold">Your Donor Dashboard</h1>
+        <Link
+          href="/dashboard/card"
+          className="inline-block mt-4 rounded-md bg-theme-500 px-4 py-2 text-sm font-medium text-black border border-theme-500 shadow-sm hover:bg-theme-600 transition"
+        >
+          View Digital ID Card
+        </Link>
         <p className="mt-2 text-gray-600">Manage your donation preferences and personal information below.</p>
 
         <div className="mt-8 max-w-2xl">
           <form onSubmit={handleProfileUpdate} className="space-y-6 rounded-lg bg-white text-black p-8 shadow-md">
             <h2 className="text-xl font-semibold">Update Your Profile</h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Donation Preference</label>
+              <fieldset className="mt-2">
+                <legend className="sr-only">Donation Type</legend>
+                <div className="space-y-2 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                  <div className="flex items-center">
+                    <input id="after_death" name="donation-type" type="radio" value="AFTER_DEATH"
+                      checked={donationType === 'AFTER_DEATH'} onChange={(e) => setDonationType(e.target.value as any)}
+                      className="h-4 w-4 border-gray-300 text-theme-600 focus:ring-theme-500"
+                    />
+                    <label htmlFor="after_death" className="ml-3 block text-sm font-medium text-gray-700">Pledge for donation after death</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input id="alive" name="donation-type" type="radio" value="ALIVE"
+                      checked={donationType === 'ALIVE'} onChange={(e) => setDonationType(e.target.value as any)}
+                      className="h-4 w-4 border-gray-300 text-theme-600 focus:ring-theme-500"
+                    />
+                    <label htmlFor="alive" className="ml-3 block text-sm font-medium text-gray-700">Register as a living donor</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
             <div>
               <label htmlFor="bloodType" className="block text-sm font-medium text-gray-700">Blood Type</label>
               <input type="text" id="bloodType" value={bloodType} onChange={(e) => setBloodType(e.target.value)}
