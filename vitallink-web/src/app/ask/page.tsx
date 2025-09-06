@@ -4,13 +4,12 @@ import { useChat } from '@ai-sdk/react';
 
 export default function AskPage() {
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat', // This still points to our backend, which now uses Gemini.
+    api: '/api/chat', 
   });
 
   return (
     <div className="bg-gray-50 flex-grow">
       <div className="container mx-auto px-4 py-8 flex flex-col h-[calc(100vh-200px)] bg-black"> 
-        {/* Adjusted height for better layout with footer */}
         <h1 className="text-3xl font-bold mb-4 text-center text-white">Ask VitalLink AI</h1>
         
         <div className="flex-grow overflow-y-auto mb-4 p-4 bg-white rounded-lg shadow-md border">

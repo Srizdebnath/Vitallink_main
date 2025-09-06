@@ -1,5 +1,3 @@
-// File: prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,7 +13,7 @@ enum Role {
   ADMIN
 }
 
-// NEW: Define the possible statuses for a Donor
+
 enum DonorStatus {
   PENDING_VERIFICATION
   VERIFIED
@@ -33,7 +31,6 @@ model User {
   updatedAt    DateTime      @updatedAt
   
   donorProfile DonorProfile?
-  // Link to a hospital if the user is a medical professional
   hospitalId   String?
   hospital     Hospital?     @relation(fields: [hospitalId], references: [id])
 }
@@ -43,37 +40,30 @@ model DonorProfile {
   bloodType      String?
   address        String?
   organsToDonate String?
-  // NEW: Add the status field
   status         DonorStatus @default(PENDING_VERIFICATION)
   
   userId         String      @unique
   user           User        @relation(fields: [userId], references: [id])
 }
 
-// NEW: The Hospital Model
+
 model Hospital {
   id        String   @id @default(cuid())
   name      String
   address   String?
-  
-  // A hospital has many medical professionals
   staff     User[]
-  // A hospital has many patients
   patients  Patient[]
 }
 
-// NEW: The Patient (Recipient) Model
 model Patient {
   id             String   @id @default(cuid())
   fullName       String
   bloodType      String
   organNeeded    String
-  medicalUrgency Int      // e.g., a score from 1-100
+  medicalUrgency Int      
   
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  
-  // Link to the hospital where the patient is registered
   hospitalId     String
   hospital       Hospital @relation(fields: [hospitalId], references: [id])
 }

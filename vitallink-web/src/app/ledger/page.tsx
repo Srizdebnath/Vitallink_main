@@ -1,11 +1,8 @@
-// File: src/app/ledger/page.tsx
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Define a type for the block structure to help with code completion
 type Block = {
   timestamp: string;
   transactionType: string;
@@ -35,7 +32,6 @@ export default function LedgerPage() {
           throw new Error('Failed to fetch ledger data.');
         }
         const data = await response.json();
-        // Reverse the array to show the newest blocks first
         setBlocks(data.ledger.reverse()); 
       } catch (err: any) {
         setError(err.message);

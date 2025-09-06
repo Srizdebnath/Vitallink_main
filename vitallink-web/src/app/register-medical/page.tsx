@@ -1,5 +1,3 @@
-// File: src/app/register-medical/page.tsx
-
 'use client';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -11,7 +9,7 @@ export default function RegisterMedicalPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await fetch('/api/auth/register-medical', { // Endpoint for medical registration
+    const response = await fetch('/api/auth/register-medical', { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, email, password }),

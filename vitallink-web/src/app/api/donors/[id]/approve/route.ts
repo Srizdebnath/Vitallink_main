@@ -1,5 +1,3 @@
-// File: src/app/api/donors/[id]/approve/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
@@ -12,7 +10,6 @@ interface JwtPayload {
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // ... authentication logic ...
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -31,7 +28,6 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         userId: donorUserId,
       },
       data: {
-        // This MUST be a string
         status: 'VERIFIED', 
       },
     });

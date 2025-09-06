@@ -1,12 +1,10 @@
-// File: src/app/admin/page.tsx
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
 
-// Define types for our data
+
 type DecodedToken = {
   role: 'DONOR' | 'MEDICAL_PROFESSIONAL' | 'ADMIN';
 };
@@ -34,8 +32,6 @@ export default function AdminPage() {
 
     try {
       const decodedToken = jwtDecode<DecodedToken>(token);
-      
-      // ** CLIENT-SIDE SECURITY CHECK **
       if (decodedToken.role !== 'ADMIN') {
         setError('Access Denied: You must be an administrator to view this page.');
         setIsLoading(false);

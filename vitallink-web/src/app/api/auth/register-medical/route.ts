@@ -1,5 +1,3 @@
-// File: src/app/api/auth/register-medical/route.ts
-// This is almost identical to the normal register route
 
 import { NextResponse } from 'next/server';
 import { hash } from 'bcryptjs';
@@ -16,7 +14,7 @@ export async function POST(request: Request) {
         fullName,
         email,
         password: hashedPassword,
-        role: Role.MEDICAL_PROFESSIONAL, // <-- THE ONLY CHANGE
+        role: Role.MEDICAL_PROFESSIONAL, 
       },
     });
 

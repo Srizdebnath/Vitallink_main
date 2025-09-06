@@ -1,9 +1,7 @@
-// File: src/components/Navbar.tsx
-
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useCallback } from 'react'; // Import useCallback
+import { useEffect, useState, useCallback } from 'react'; 
 import { useRouter } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
 
@@ -15,12 +13,11 @@ export default function Navbar() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const router = useRouter();
 
-  // Wrap handleLogout in useCallback so it doesn't change on every render
   const handleLogout = useCallback(() => {
     localStorage.removeItem('token');
     setUserRole(null);
     router.push('/');
-  }, [router]); // It only depends on the router
+  }, [router]); 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -35,9 +32,9 @@ export default function Navbar() {
     } else {
       setUserRole(null);
     }
-  }, [handleLogout]); // Add handleLogout to the dependency array
+  }, [handleLogout]); 
 
-  // ... The rest of the JSX is unchanged
+  
   return (
     <nav className="bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

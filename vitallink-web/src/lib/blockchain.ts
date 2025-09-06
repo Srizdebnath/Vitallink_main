@@ -1,23 +1,20 @@
-// File: src/lib/blockchain.ts
-
 import { createHash } from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-// Define the structure of the data inside a block
+
 interface TransactionData {
   userId: string;
   consentGiven: boolean;
   profileHash: string;
   recordedAt: string;
-  message?: string; // Optional message for genesis block
+  message?: string; 
 }
 
-// Define the structure of a "block" in our simulated blockchain
 interface Block {
   timestamp: string;
   transactionType: 'DONOR_CONSENT';
-  data: TransactionData; // Use the specific type here
+  data: TransactionData;
   hash: string;
   previousHash: string;
 }
@@ -51,7 +48,7 @@ async function initializeChain() {
   isInitialized = true;
 }
 
-// Specify the type for the 'data' parameter
+
 function calculateHash(timestamp: string, data: TransactionData, previousHash: string): string {
   const dataString = JSON.stringify(data);
   return createHash('sha256')
@@ -59,7 +56,7 @@ function calculateHash(timestamp: string, data: TransactionData, previousHash: s
     .digest('hex');
 }
 
-// Specify the type for the 'profileData'
+
 interface ProfileData {
   bloodType: string;
   address: string;

@@ -1,4 +1,3 @@
-// File: src/app/api/patients/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
@@ -12,7 +11,7 @@ interface JwtPayload {
 
 export async function GET(request: NextRequest) {
     try {
-      // 1. Authenticate and get user info
+      
       const authHeader = request.headers.get('authorization');
       if (!authHeader?.startsWith('Bearer ')) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -25,13 +24,13 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ message: 'Forbidden: User is not associated with a hospital.' }, { status: 403 });
       }
   
-      // 2. Fetch all patients from that user's hospital
+      
       const patients = await prisma.patient.findMany({
         where: {
           hospitalId: medicalUser.hospitalId,
         },
         orderBy: {
-          medicalUrgency: 'desc', // Show most urgent patients first
+          medicalUrgency: 'desc', 
         }
       });
   
@@ -45,7 +44,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Authenticate the user and check their role
+    
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -53,7 +52,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(' ')[1];
     const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-    // 2. Find the logged-in medical professional to get their hospital ID
+    
     const medicalUser = await prisma.user.findUnique({
       where: { id: decoded.userId },
     });
@@ -62,23 +61,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Forbidden: User is not an authorized medical professional with an assigned hospital.' }, { status: 403 });
     }
 
-    // 3. Get the patient data from the request body
+   
     const body = await request.json();
     const { fullName, bloodType, organNeeded, medicalUrgency } = body;
 
-    // Basic validation
+    
     if (!fullName || !bloodType || !organNeeded || !medicalUrgency) {
       return NextResponse.json({ message: 'Missing required fields.' }, { status: 400 });
     }
 
-    // 4. Create the new patient in the database
+    
     const newPatient = await prisma.patient.create({
       data: {
         fullName,
         bloodType,
         organNeeded,
-        medicalUrgency: parseInt(medicalUrgency, 10), // Ensure urgency is an integer
-        hospitalId: medicalUser.hospitalId, // Link patient to the user's hospital
+        medicalUrgency: parseInt(medicalUrgency, 10), 
+        hospitalId: medicalUser.hospitalId, 
       },
     });
 

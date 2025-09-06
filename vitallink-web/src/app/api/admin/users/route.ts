@@ -1,5 +1,3 @@
-// File: src/app/api/admin/users/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
@@ -12,7 +10,6 @@ interface JwtPayload {
 
 export async function GET(request: NextRequest) {
   try {
-    // 1. Authenticate the user and check their role
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -21,18 +18,14 @@ export async function GET(request: NextRequest) {
     const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
     const decoded = verify(token, jwtSecret) as JwtPayload;
 
-    // ** SECURITY CHECK: Only Admins can access this route **
     if (decoded.role !== 'ADMIN') {
       return NextResponse.json({ message: 'Forbidden: Access denied' }, { status: 403 });
     }
 
-    // 2. Fetch all users from the database if authorized
     const users = await prisma.user.findMany({
       orderBy: {
-        createdAt: 'desc', // Show newest users first
+        createdAt: 'desc', 
       },
-      // Use `select` to explicitly choose which fields to return
-      // CRITICAL: This prevents the password hash from ever being sent to the client
       select: {
         id: true,
         fullName: true,

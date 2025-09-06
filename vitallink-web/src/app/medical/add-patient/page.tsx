@@ -1,5 +1,3 @@
-// File: src/app/medical/add-patient/page.tsx
-
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +9,7 @@ export default function AddPatientPage() {
   const [fullName, setFullName] = useState('');
   const [bloodType, setBloodType] = useState('');
   const [organNeeded, setOrganNeeded] = useState('');
-  const [medicalUrgency, setMedicalUrgency] = useState('50'); // Default to 50
+  const [medicalUrgency, setMedicalUrgency] = useState('50'); 
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,7 +33,6 @@ export default function AddPatientPage() {
     toast.promise(addPromise, {
       loading: 'Adding patient to the registry...',
       success: (data) => {
-        // Redirect back to the main medical dashboard on success
         router.push('/medical');
         return data.message || 'Patient added successfully!';
       },

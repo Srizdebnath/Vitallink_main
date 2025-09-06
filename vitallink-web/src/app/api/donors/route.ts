@@ -1,5 +1,3 @@
-// File: src/app/api/donors/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
@@ -30,7 +28,6 @@ export async function GET(request: NextRequest) {
           status: 'PENDING_VERIFICATION',
         },
       },
-      // THIS IS THE CORRECTED PART
       select: {
         id: true,
         fullName: true,

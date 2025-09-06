@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { jwtDecode } from 'jwt-decode'; 
 import toast from 'react-hot-toast';
 
-// 2. DEFINE a type for our token's payload for better code quality
 interface DecodedToken {
   userId: string;
   email: string;
@@ -19,7 +18,7 @@ export default function LoginPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
   
-    // We can wrap the API call in a toast.promise for a great UX
+   
     const loginPromise = fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -27,17 +26,16 @@ export default function LoginPage() {
     }).then(async (response) => {
       const data = await response.json();
       if (!response.ok) {
-        // If the response is not OK, we must throw an error to be caught
+        
         throw new Error(data.message || 'Login failed.');
       }
-      return data; // Pass data on success
+      return data; 
     });
-  
-    // toast.promise will automatically handle loading, success, and error states
+
     toast.promise(loginPromise, {
       loading: 'Signing in...',
       success: (data) => {
-        // This function runs on success
+       
         const { token } = data;
         localStorage.setItem('token', token);
         
@@ -45,7 +43,7 @@ export default function LoginPage() {
           const decodedToken = jwtDecode<DecodedToken>(token);
           const userRole = decodedToken.role;
   
-          // Redirect after the toast is shown
+          
           setTimeout(() => {
             switch (userRole) {
               case 'DONOR': window.location.href = '/dashboard'; break;
@@ -53,16 +51,16 @@ export default function LoginPage() {
               case 'ADMIN': window.location.href = '/admin'; break;
               default: window.location.href = '/'; break;
             }
-          }, 1000); // Wait 1 second before redirecting
+          }, 1000); 
   
         } catch (error) {
           console.error("Failed to decode token:", error);
           setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
         }
         
-        return 'Login successful!'; // This is the success message
+        return 'Login successful!'; 
       },
-      error: (err) => err.message, // This function gets the error message
+      error: (err) => err.message, 
     });
   };
   
@@ -76,7 +74,6 @@ export default function LoginPage() {
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* ... The rest of the form JSX is unchanged ... */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">Email address</label>
             <div className="mt-2">
