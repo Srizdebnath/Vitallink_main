@@ -44,7 +44,7 @@ Welcome to **VitalLink**, a full-stack web application designed to modernize and
 
 ![AI Screenshot](./screenshots/ai.jpg)
 
-> _Add your own screenshots in the `/screenshots` folder to showcase more features!_
+
 
 ---
 
