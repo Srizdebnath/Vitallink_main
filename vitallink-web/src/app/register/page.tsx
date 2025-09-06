@@ -1,25 +1,39 @@
 'use client';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation'; 
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = async (event: React.FormEvent) => {
+
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await fetch('/api/auth/register', {
+
+    const registerPromise = fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, email, password }),
+    }).then(async (response) => {
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed.');
+      }
+      return data; 
     });
-    const data = await response.json();
-    if (response.ok) {
-      toast.success('Registration successful!');
-      window.location.href = '/login';
-    } else {
-      toast.error(data.message || 'Something went wrong!');
-    }
+
+    toast.promise(registerPromise, {
+      loading: 'Sending verification code...',
+      success: (data) => {
+        
+        router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+      
+        return data.message;
+      },
+      error: (err) => err.message, 
+    });
   };
 
   return (
@@ -59,7 +73,7 @@ export default function RegisterPage() {
           </div>
           <div>
             <button type="submit"
-              className="flex w-full justify-center rounded-md bg-theme-500 px-3 py-1.5 text-sm font-semibold leading-6 text-black shadow-sm hover:bg-theme-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-500"
+              className="flex w-full justify-center text-black rounded-md bg-theme-500 px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm hover:bg-theme-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-500"
             >
               Sign up
             </button>

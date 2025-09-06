@@ -13,6 +13,11 @@ enum Role {
   ADMIN
 }
 
+enum AccountStatus {
+  UNVERIFIED
+  VERIFIED
+  SUSPENDED
+}
 
 enum DonorStatus {
   PENDING_VERIFICATION
@@ -27,6 +32,12 @@ model User {
   fullName     String?
   password     String
   role         Role          @default(DONOR)
+
+  status       AccountStatus @default(UNVERIFIED)
+  otp              String?       
+  otpExpiresAt     DateTime?
+
+
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   
