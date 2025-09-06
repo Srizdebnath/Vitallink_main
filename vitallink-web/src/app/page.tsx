@@ -12,9 +12,11 @@ export default function Home() {
           <p className="mt-6 text-lg md:text-xl max-w-2xl">
             VitalLink is a modern, transparent platform dedicated to making organ donation simpler and more trustworthy for everyone involved.
           </p>
-          <div className="mt-10">
+          <div className="mt-10 ">
             <Link href="/register"
-              className="rounded-md bg-theme-500 px-6 py-3 text-lg font-semibold shadow-sm hover:bg-theme-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-500"
+              // className="rounded-md bg-theme-500 px-6 py-3 text-lg font-semibold shadow-sm hover:bg-theme-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-500"
+                className="rounded-md bg-white px-6 py-3 text-lg font-semibold text-black shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+
             >
               Become a Donor Today
             </Link>
