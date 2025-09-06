@@ -1,10 +1,12 @@
+// File: prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite" 
-  url      = "file:./dev.db" 
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 enum Role {
@@ -13,27 +15,65 @@ enum Role {
   ADMIN
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  fullName  String?
-  password  String
-  role         Role          @default(DONOR)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  donorProfile DonorProfile?
+// NEW: Define the possible statuses for a Donor
+enum DonorStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  INACTIVE
+  REJECTED
 }
 
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  fullName     String?
+  password     String
+  role         Role          @default(DONOR)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  donorProfile DonorProfile?
+  // Link to a hospital if the user is a medical professional
+  hospitalId   String?
+  hospital     Hospital?     @relation(fields: [hospitalId], references: [id])
+}
 
 model DonorProfile {
-  id        String   @id @default(cuid())
-  bloodType String?
-  address   String?
+  id             String      @id @default(cuid())
+  bloodType      String?
+  address        String?
   organsToDonate String?
-
+  // NEW: Add the status field
+  status         DonorStatus @default(PENDING_VERIFICATION)
   
-  userId String @unique 
-  user   User   @relation(fields: [userId], references: [id])
+  userId         String      @unique
+  user           User        @relation(fields: [userId], references: [id])
+}
+
+// NEW: The Hospital Model
+model Hospital {
+  id        String   @id @default(cuid())
+  name      String
+  address   String?
+  
+  // A hospital has many medical professionals
+  staff     User[]
+  // A hospital has many patients
+  patients  Patient[]
+}
+
+// NEW: The Patient (Recipient) Model
+model Patient {
+  id             String   @id @default(cuid())
+  fullName       String
+  bloodType      String
+  organNeeded    String
+  medicalUrgency Int      // e.g., a score from 1-100
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Link to the hospital where the patient is registered
+  hospitalId     String
+  hospital       Hospital @relation(fields: [hospitalId], references: [id])
 }

@@ -1,3 +1,5 @@
+// File: src/app/api/donors/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
@@ -15,33 +17,37 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
     const token = authHeader.split(' ')[1];
+    const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key-for-development-only';
-    const decoded = verify(token, jwtSecret) as JwtPayload;
-
-    // ** SERVER-SIDE SECURITY CHECK **
-    if (decoded.role !== 'MEDICAL_PROFESSIONAL') {
+    if (decoded.role !== 'MEDICAL_PROFESSIONAL' && decoded.role !== 'ADMIN') {
       return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
 
-    // If authorized, fetch all users with the DONOR role and their profiles
-    const donors = await prisma.user.findMany({
+    const pendingDonors = await prisma.user.findMany({
       where: {
-        role: Role.DONOR,
+        role: 'DONOR',
+        donorProfile: {
+          status: 'PENDING_VERIFICATION',
+        },
       },
-      select: { // Only select the data we need to send to the client
+      // THIS IS THE CORRECTED PART
+      select: {
         id: true,
         fullName: true,
         email: true,
         donorProfile: {
           select: {
             bloodType: true,
+            status: true,
           },
         },
       },
+      orderBy: {
+        createdAt: 'asc',
+      }
     });
 
-    return NextResponse.json({ donors }, { status: 200 });
+    return NextResponse.json({ pendingDonors }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });
