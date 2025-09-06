@@ -10,6 +10,39 @@ interface JwtPayload {
   role: Role;
 }
 
+export async function GET(request: NextRequest) {
+    try {
+      // 1. Authenticate and get user info
+      const authHeader = request.headers.get('authorization');
+      if (!authHeader?.startsWith('Bearer ')) {
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      }
+      const token = authHeader.split(' ')[1];
+      const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
+  
+      const medicalUser = await prisma.user.findUnique({ where: { id: decoded.userId } });
+      if (!medicalUser || !medicalUser.hospitalId) {
+        return NextResponse.json({ message: 'Forbidden: User is not associated with a hospital.' }, { status: 403 });
+      }
+  
+      // 2. Fetch all patients from that user's hospital
+      const patients = await prisma.patient.findMany({
+        where: {
+          hospitalId: medicalUser.hospitalId,
+        },
+        orderBy: {
+          medicalUrgency: 'desc', // Show most urgent patients first
+        }
+      });
+  
+      return NextResponse.json({ patients }, { status: 200 });
+  
+    } catch (error) {
+      console.error('Error fetching patients:', error);
+      return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });
+    }
+  }
+
 export async function POST(request: NextRequest) {
   try {
     // 1. Authenticate the user and check their role

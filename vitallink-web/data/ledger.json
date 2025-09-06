@@ -55,5 +55,17 @@
     },
     "hash": "0d29cd0b2109961e1f86a21fda1303622cc483f03762d169ad09ddb10b668a83",
     "previousHash": "550ae19b442d4182ae7a729d371580ffa984a462903065e2151e9b854b6e6867"
+  },
+  {
+    "timestamp": "2025-09-06T14:44:07.740Z",
+    "transactionType": "DONOR_CONSENT",
+    "data": {
+      "userId": "cmf8djb960005fj6olsiisz17",
+      "consentGiven": true,
+      "profileHash": "db1c2e96957d12d8fff89ce6b6920d113638ec011099f08e68977f51bd58c636",
+      "recordedAt": "2025-09-06T14:44:07.740Z"
+    },
+    "hash": "9fb550a16e76f054b1a1bb962041fb59f929d1a6a783b337cec1f3fabf136c17",
+    "previousHash": "0d29cd0b2109961e1f86a21fda1303622cc483f03762d169ad09ddb10b668a83"
   }
 ]
