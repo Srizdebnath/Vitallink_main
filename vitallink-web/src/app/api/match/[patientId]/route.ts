@@ -19,7 +19,7 @@ const bloodCompatibility: { [key: string]: string[] } = {
   'O-': ['O-'],
 };
 
-export async function GET(request: NextRequest, { params }: { params: { patientId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ patientId: string }> }) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) { return NextResponse.json({ message: 'Unauthorized' }, { status: 401 }); }
@@ -27,8 +27,9 @@ export async function GET(request: NextRequest, { params }: { params: { patientI
     const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
     if (decoded.role !== 'MEDICAL_PROFESSIONAL' && decoded.role !== 'ADMIN') { return NextResponse.json({ message: 'Forbidden' }, { status: 403 }); }
 
+    const { patientId } = await params;
     const patient = await prisma.patient.findUnique({
-      where: { id: params.patientId },
+      where: { id: patientId },
     });
 
     if (!patient) {
@@ -41,7 +42,9 @@ export async function GET(request: NextRequest, { params }: { params: { patientI
     });
     
     const potentialMatches = verifiedDonors.filter(donor => {
-      const organMatch = donor.organsToDonate?.toLowerCase().includes(patient.organNeeded.toLowerCase());
+      const organMatch = donor.organsToDonate?.some(organ => 
+        organ.toLowerCase().includes(patient.organNeeded.toLowerCase())
+      );
       const compatibleBloodTypes = bloodCompatibility[patient.bloodType] || [];
       const bloodMatch = donor.bloodType && compatibleBloodTypes.includes(donor.bloodType);
       return organMatch && bloodMatch;

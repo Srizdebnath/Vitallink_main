@@ -8,7 +8,7 @@ interface JwtPayload {
   role: Role;
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
@@ -21,7 +21,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       return NextResponse.json({ message: 'Forbidden: Access denied' }, { status: 403 });
     }
 
-    const donorUserId = params.id;
+    const { id: donorUserId } = await params;
 
     const updatedDonorProfile = await prisma.donorProfile.update({
       where: {

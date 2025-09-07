@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
     const profileWithOrgansArray = {
         ...donorProfile,
-        organsToDonate: donorProfile.organsToDonate ? donorProfile.organsToDonate.split(',') : [],
+        organsToDonate: donorProfile.organsToDonate || [],
     };
     
     
@@ -63,13 +63,12 @@ export async function POST(request: NextRequest) {
     
     const body = await request.json();
     const { bloodType, address, organsToDonate, donationType } = body;
-    const organsString = organsToDonate.join(',');
 
    
     const updatedProfile = await prisma.donorProfile.upsert({
       where: { userId },
-      update: { bloodType, address, organsToDonate: organsString, donationType },
-      create: { userId, bloodType, address, organsToDonate: organsString, donationType },
+      update: { bloodType, address, organsToDonate, donationType },
+      create: { userId, bloodType, address, organsToDonate, donationType },
     });
 
     

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       prompt: searchPrompt,
     });
 
-    const relevantIds = relevantIdsText.match(/vlk-\d{3}/g) || [];
+    const relevantIds: string[] = relevantIdsText.match(/vlk-\d{3}/g) || [];
     const context = knowledge
       .filter(item => relevantIds.includes(item.id))
       .map(item => item.content)

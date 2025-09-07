@@ -1,4 +1,9 @@
-export const knowledge = [
+interface KnowledgeItem {
+  id: string;
+  content: string;
+}
+
+export const knowledge: KnowledgeItem[] = [
   {
     id: 'vlk-001',
     content: 'VitalLink is a technology platform designed to make the organ donation process more efficient, transparent, and trustworthy.'

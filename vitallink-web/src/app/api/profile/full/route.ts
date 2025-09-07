@@ -9,7 +9,9 @@ interface JwtPayload { userId: string; }
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) { /* ... */ }
+    if (!authHeader?.startsWith('Bearer ')) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
     const token = authHeader.split(' ')[1];
     const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
