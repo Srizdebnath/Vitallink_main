@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 interface TeamMember {
   name: string;
@@ -73,7 +74,7 @@ export default function ContactPage() {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            We're a passionate team of developers who built VitalLink for the Metamorph 2025 Hackathon. 
+            We&apos;re a passionate team of developers who built VitalLink for the Metamorph 2025 Hackathon. 
             Our mission is to create a transparent and efficient platform for organ donation.
           </p>
         </div>
@@ -82,9 +83,11 @@ export default function ContactPage() {
           {teamMembers.map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
-                <img
-                  src={member.photo}
+                <Image
+                  src={`/team/${member.photo}`}
                   alt={member.name}
+                  width={400}
+                  height={256}
                   className="w-full text-black h-64 object-cover"
                 />
                 <div className="absolute inset-0 text-black bg-gradient-to-t from-black/50 to-transparent"></div>
@@ -136,7 +139,7 @@ export default function ContactPage() {
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Get In Touch</h2>
               <p className="text-lg text-black text-gray-600">
-                Have questions about VitalLink or want to collaborate? We'd love to hear from you!
+                Have questions about VitalLink or want to collaborate? We&apos;d love to hear from you!
               </p>
             </div>
 
