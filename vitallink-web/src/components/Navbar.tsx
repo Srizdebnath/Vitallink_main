@@ -69,6 +69,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <div className="flex items-baseline space-x-4">
               <Link href="/ask" className={linkClasses("/ask")}>Ask AI</Link>
+              <Link href="/contact" className={linkClasses("/contact")}>Contact</Link>
 
               {userRole ? (
                 <>

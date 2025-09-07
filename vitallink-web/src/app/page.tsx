@@ -7,7 +7,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
         <div className="relative z-20 text-center p-4">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Give the Gift of Life.
+            Give the Gift of Life
           </h1>
           <p className="mt-6 text-lg md:text-xl max-w-2xl">
             VitalLink is a modern, transparent platform dedicated to making organ donation simpler and more trustworthy for everyone involved.
