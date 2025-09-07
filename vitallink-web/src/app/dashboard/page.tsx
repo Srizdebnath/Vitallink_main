@@ -16,7 +16,7 @@ type DonorProfile = {
 export default function DashboardPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [profile, setProfile] = useState<DonorProfile | null>(null);
+  const [, setProfile] = useState<DonorProfile | null>(null);
   const [bloodType, setBloodType] = useState('');
   const [address, setAddress] = useState('');
   const [organs, setOrgans] = useState('');
@@ -105,14 +105,14 @@ export default function DashboardPage() {
                 <div className="space-y-2 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
                   <div className="flex items-center">
                     <input id="after_death" name="donation-type" type="radio" value="AFTER_DEATH"
-                      checked={donationType === 'AFTER_DEATH'} onChange={(e: ChangeEvent<HTMLInputElement>) => setDonationType(e.target.value as any)}
+                      checked={donationType === 'AFTER_DEATH'} onChange={(e: ChangeEvent<HTMLInputElement>) => setDonationType(e.target.value as 'ALIVE' | 'AFTER_DEATH')}
                       className="h-4 w-4 border-gray-300 text-theme-600 focus:ring-theme-500"
                     />
                     <label htmlFor="after_death" className="ml-3 block text-sm font-medium text-gray-700">Pledge for donation after death</label>
                   </div>
                   <div className="flex items-center">
                     <input id="alive" name="donation-type" type="radio" value="ALIVE"
-                      checked={donationType === 'ALIVE'} onChange={(e: ChangeEvent<HTMLInputElement>) => setDonationType(e.target.value as any)}
+                      checked={donationType === 'ALIVE'} onChange={(e: ChangeEvent<HTMLInputElement>) => setDonationType(e.target.value as 'ALIVE' | 'AFTER_DEATH')}
                       className="h-4 w-4 border-gray-300 text-theme-600 focus:ring-theme-500"
                     />
                     <label htmlFor="alive" className="ml-3 block text-sm font-medium text-gray-700">Register as a living donor</label>

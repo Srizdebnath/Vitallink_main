@@ -6,7 +6,10 @@ import { useRouter } from 'next/navigation';
 type Block = {
   timestamp: string;
   transactionType: string;
-  data: any;
+  data: {
+    profileHash?: string;
+    [key: string]: unknown;
+  };
   hash: string;
   previousHash: string;
 };
@@ -33,8 +36,8 @@ export default function LedgerPage() {
         }
         const data = await response.json();
         setBlocks(data.ledger.reverse()); 
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setIsLoading(false);
       }

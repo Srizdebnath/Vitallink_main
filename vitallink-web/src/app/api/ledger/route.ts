@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json({ ledger }, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     
     if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
       console.warn('Ledger file not found, returning empty array.');

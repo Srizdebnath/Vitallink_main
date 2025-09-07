@@ -29,7 +29,7 @@ export default function AskPage() {
                 </div>
                 <h2 className="text-2xl font-semibold mb-2">Welcome!</h2>
                 <p>Have a question about the organ donation process? Ask away!</p>
-                <p className="mt-4 text-sm">Examples: "Who can be a donor?", "Is there a cost?", "Which religions support donation?"</p>
+                <p className="mt-4 text-sm">Examples: &quot;Who can be a donor?&quot;, &quot;Is there a cost?&quot;, &quot;Which religions support donation?&quot;</p>
               </div>
             )}
         </div>
