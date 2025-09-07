@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState,ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
@@ -59,7 +59,6 @@ export default function DashboardPage() {
     const token = localStorage.getItem('token');
     const organsArray = organs.split(',').map(organ => organ.trim()).filter(Boolean);
 
-    const body = { bloodType, address, organsToDonate: organsArray, donationType };
 
     const updatePromise = fetch('/api/profile', {
       method: 'POST',
@@ -75,10 +74,7 @@ export default function DashboardPage() {
 
     toast.promise(updatePromise, {
       loading: 'Saving changes...',
-      success: (data) => {
-        setProfile(data.profile);
-        return 'Profile updated successfully!';
-      },
+      success: () =>'Profile updated successfully!',
       error: (err) => err.toString(),
     });
   };
@@ -109,14 +105,14 @@ export default function DashboardPage() {
                 <div className="space-y-2 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
                   <div className="flex items-center">
                     <input id="after_death" name="donation-type" type="radio" value="AFTER_DEATH"
-                      checked={donationType === 'AFTER_DEATH'} onChange={(e) => setDonationType(e.target.value as any)}
+                      checked={donationType === 'AFTER_DEATH'} onChange={(e: ChangeEvent<HTMLInputElement>) => setDonationType(e.target.value as any)}
                       className="h-4 w-4 border-gray-300 text-theme-600 focus:ring-theme-500"
                     />
                     <label htmlFor="after_death" className="ml-3 block text-sm font-medium text-gray-700">Pledge for donation after death</label>
                   </div>
                   <div className="flex items-center">
                     <input id="alive" name="donation-type" type="radio" value="ALIVE"
-                      checked={donationType === 'ALIVE'} onChange={(e) => setDonationType(e.target.value as any)}
+                      checked={donationType === 'ALIVE'} onChange={(e: ChangeEvent<HTMLInputElement>) => setDonationType(e.target.value as any)}
                       className="h-4 w-4 border-gray-300 text-theme-600 focus:ring-theme-500"
                     />
                     <label htmlFor="alive" className="ml-3 block text-sm font-medium text-gray-700">Register as a living donor</label>
